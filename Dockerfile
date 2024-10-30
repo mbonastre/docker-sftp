@@ -1,5 +1,7 @@
 FROM debian:bookworm
-MAINTAINER Adrian Dvergsdal [atmoz.net]
+LABEL forked_from="https://github.com/atmoz/sftp"
+LABEL source=https://github.com/mbonastre/docker-sftp
+LABEL dockerhub=""
 
 # Steps done in one RUN layer:
 # - Install upgrades and new packages
@@ -13,9 +15,9 @@ RUN apt-get update && \
     rm -f /etc/ssh/ssh_host_*key*
 
 COPY files/sshd_config /etc/ssh/sshd_config
-COPY files/create-sftp-user /usr/local/bin/
-COPY files/entrypoint /
+COPY files/alternate-create-sftp-user /usr/local/bin/
+COPY files/alternate-entrypoint /
 
 EXPOSE 22
 
-ENTRYPOINT ["/entrypoint"]
+ENTRYPOINT ["/alternate-entrypoint"]
