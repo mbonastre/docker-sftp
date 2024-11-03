@@ -81,7 +81,7 @@ if [ -n "$gid" ]; then
 fi
 
 if [ "$already_exists" ] ; then
-  if [ "${usermodOptions[#]}" -ne 0 ] ; then
+  if [ "${#usermodOptions[@]}" -ne 0 ] ; then
     usermod "${usermodOptions[@]}" "$user"
   fi
 else
