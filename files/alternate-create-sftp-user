@@ -60,7 +60,7 @@ IFS=':' read -ra pwentry <<< "$passwd_entry"
 
 if [ -n "$passwd_entry" ] ; then
     already_exists=1
-    Log "User $user already exists (might use usermod)"
+    log "User $user already exists (might use usermod)"
 fi
 
 if [ -n "$uid" ]; then
