@@ -4,17 +4,18 @@ Forked from https://github.com/atmoz/sftp to customize some things
 
 # SFTP
 
-![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/mbonastre/sftp/build.yml?logo=github) ![GitHub stars](https://img.shields.io/github/stars/mbonastre/sftp?logo=github) ![Docker Stars](https://img.shields.io/docker/stars/mbonastre/sftp?label=stars&logo=docker) ![Docker Pulls](https://img.shields.io/docker/pulls/mbonastre/sftp?label=pulls&logo=docker)
-
 # Securely share your files
 
 Easy to use SFTP ([SSH File Transfer Protocol](https://en.wikipedia.org/wiki/SSH_File_Transfer_Protocol)) server with [OpenSSH](https://en.wikipedia.org/wiki/OpenSSH).
 
 # Usage
 
-- Define users in (1) command arguments, (2) `SFTP_USERS` environment variable
-  or (3) in file mounted as `/etc/sftp/users.conf` (syntax:
-  `user:pass[:e][:uid[:gid[:dir1[,dir2]...]]] ...`, see below for examples)
+- Define users in:
+   - (1) command arguments,
+   - (2) `SFTP_USERS` environment variable, or
+   - (3) in file mounted as `/etc/sftp/users.conf`
+- Syntax: `user:pass[:e][:uid[:gid[:dir1[,dir2]...[:ssh pub key][,ssh pub key2]]]] ...`,
+  see below for examples)
   - Set UID/GID manually for your users if you want them to make changes to
     your mounted volumes with permissions matching your host filesystem.
   - Directory names at the end will be created under user's home directory with
@@ -33,7 +34,7 @@ Easy to use SFTP ([SSH File Transfer Protocol](https://en.wikipedia.org/wiki/SSH
 ## Simplest docker run example
 
 ```
-docker run -p 22:22 -d mbonastre/sftp foo:pass:::upload
+docker run -p 2200:22 -d colmenaeu/sftp foo:pass:::upload
 ```
 
 User "foo" with password "pass" can login with sftp and upload files to a folder called "upload". No mounted directories or custom UID/GID. Later you can inspect the files and use `--volumes-from` to mount them somewhere else (or see next example).
@@ -45,7 +46,7 @@ Let's mount a directory and set UID:
 ```
 docker run \
     -v <host-dir>/upload:/home/foo/upload \
-    -p 2222:22 -d mbonastre/sftp \
+    -p 2200:22 -d mbonastre/sftp \
     foo:pass:1001
 ```
 
@@ -53,17 +54,17 @@ docker run \
 
 ```
 sftp:
-    image: mbonastre/sftp
+    image: colmenaeu/sftp
     volumes:
         - <host-dir>/upload:/home/foo/upload
     ports:
-        - "2222:22"
+        - "2200:22"
     command: foo:pass:1001
 ```
 
 ### Logging in
 
-The OpenSSH server runs by default on port 22, and in this example, we are forwarding the container's port 22 to the host's port 2222. To log in with the OpenSSH client, run: `sftp -P 2222 foo@<host-ip>`
+The OpenSSH server runs by default on port 22, and in this example, we are forwarding the container's port 22 to the host's port 2222. To log in with the OpenSSH client, run: `sftp -P 2200 foo@<host-ip>`
 
 ## Store users in config
 
